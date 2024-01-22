@@ -34,10 +34,9 @@ func getTestParcel() Parcel {
 func TestAddGetDelete(t *testing.T) {
 	// prepare
 	db, err := sql.Open("sqlite", "tracker.db") // настройте подключение к БД
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+
+	require.NoError(t, err)
+
 	defer db.Close()
 
 	store := NewParcelStore(db)
@@ -56,10 +55,7 @@ func TestAddGetDelete(t *testing.T) {
 	tp, err := store.Get(id) // tp = test parcel from data base
 
 	require.NoError(t, err, "get error")
-	assert.Equal(t, parcel.Status, tp.Status, parcel.Status, "expected %s got %s", parcel.Status, tp.Status)
-	assert.Equal(t, parcel.Client, tp.Client, parcel.Client, "expected %d got %d", parcel.Client, tp.Client)
-	assert.Equal(t, parcel.CreatedAt, tp.CreatedAt, "expected %s got %s", parcel.CreatedAt, tp.CreatedAt)
-	assert.Equal(t, parcel.Address, tp.Address, "expected %s got %s", parcel.Address, tp.Address)
+	require.Equal(t, parcel, tp, "expected equal parcels")
 
 	// delete
 	// удалите добавленную посылку, убедитесь в отсутствии ошибки
@@ -105,12 +101,7 @@ func TestSetAddress(t *testing.T) {
 	up, err := store.Get(id) // up = updated parcel from data base
 
 	require.NoError(t, err, "get error")
-	assert.Equal(t, newAddress, up.Address, "expected %s got %s", newAddress, up.Address)
-	assert.Equal(t, up.Status, parcel.Status, "fields not equal")
-	assert.Equal(t, up.Client, parcel.Client, "fields not equal")
-	assert.Equal(t, up.CreatedAt, parcel.CreatedAt, "fields not equal")
-	assert.NotEqual(t, up.Address, parcel.Address, "fields not equal")
-
+	require.Equal(t, newAddress, up.Address, "expected %s got %s", newAddress, up.Address)
 }
 
 // TestSetStatus проверяет обновление статуса
@@ -144,12 +135,7 @@ func TestSetStatus(t *testing.T) {
 	up, err := store.Get(id) // up = updated parcel from data base
 
 	require.NoError(t, err, "get error")
-	assert.NotEqual(t, up.Status, parcel.Status, "status not changed")
-	assert.Equal(t, up.Status, ParcelStatusSent, "expected %s got %s", ParcelStatusSent, up.Address)
-	assert.Equal(t, up.Address, parcel.Address, "fields not equal")
-	assert.Equal(t, up.Client, parcel.Client, "fields not equal")
-	assert.Equal(t, up.CreatedAt, parcel.CreatedAt, "fields not equal")
-	assert.Equal(t, up.Address, parcel.Address, "fields not equal")
+	require.Equal(t, ParcelStatusSent, up.Status, "expected %s got %s", ParcelStatusSent, up.Address)
 }
 
 // TestGetByClient проверяет получение посылок по идентификатору клиента
@@ -198,7 +184,7 @@ func TestGetByClient(t *testing.T) {
 	// убедитесь, что количество полученных посылок совпадает с количеством добавленных
 
 	require.NoError(t, err, "get error")
-	assert.Equal(t, len(parcels), len(storedParcels), "expected %d got %d", len(parcels), len(storedParcels))
+	require.Equal(t, len(parcels), len(storedParcels), "expected %d got %d", len(parcels), len(storedParcels))
 
 	// check
 	for _, parcel := range storedParcels {
@@ -208,12 +194,7 @@ func TestGetByClient(t *testing.T) {
 		mp, ok := parcelMap[parcel.Number] // mp = mapped parcel
 
 		require.True(t, ok, "parcel with id=%d not found", parcel.Number)
-		assert.Equal(t, mp, parcel)
-		assert.Equal(t, mp.Status, parcel.Status, "fields not equal")
-		assert.Equal(t, mp.Address, parcel.Address, "fields not equal")
-		assert.Equal(t, mp.Client, parcel.Client, "fields not equal")
-		assert.Equal(t, mp.CreatedAt, parcel.CreatedAt, "fields not equal")
-		assert.Equal(t, mp.Address, parcel.Address, "fields not equal")
+		assert.Equal(t, mp, parcel, "expected equal parcels")
 
 	}
 }
