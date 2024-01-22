@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/stretchr/testify v1.8.4
-	modernc.org/sqlite v1.27.0
+	modernc.org/sqlite v1.28.0
 )
 
 require (
@@ -15,6 +15,7 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/tools v0.0.0-20201124115921-2c860bdd6e78 // indirect
