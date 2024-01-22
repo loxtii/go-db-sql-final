@@ -45,6 +45,7 @@ func TestAddGetDelete(t *testing.T) {
 	// add
 	// добавьте новую посылку в БД, убедитесь в отсутствии ошибки и наличии идентификатора
 	id, err := store.Add(parcel)
+	parcel.Number = id
 
 	require.NoError(t, err, "add error")
 	assert.NotEqual(t, id, 0, "expected not zero value")
